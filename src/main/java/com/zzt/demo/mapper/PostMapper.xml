@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzt.demo.dao.PostMapper" >
+  <resultMap id="BaseResultMap" type="com.zzt.demo.model.Post" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="blog_id" property="blogId" jdbcType="INTEGER" />
+    <result column="author_id" property="authorId" jdbcType="INTEGER" />
+    <result column="created_on" property="createdOn" jdbcType="VARCHAR" />
+    <result column="section" property="section" jdbcType="VARCHAR" />
+    <result column="subject" property="subject" jdbcType="VARCHAR" />
+    <result column="draft" property="draft" jdbcType="VARCHAR" />
+    <result column="body" property="body" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, blog_id, author_id, created_on, section, subject, draft, body
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from post
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from post
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzt.demo.model.Post" >
+    insert into post (id, blog_id, author_id, 
+      created_on, section, subject, 
+      draft, body)
+    values (#{id,jdbcType=INTEGER}, #{blogId,jdbcType=INTEGER}, #{authorId,jdbcType=INTEGER}, 
+      #{createdOn,jdbcType=VARCHAR}, #{section,jdbcType=VARCHAR}, #{subject,jdbcType=VARCHAR}, 
+      #{draft,jdbcType=VARCHAR}, #{body,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzt.demo.model.Post" >
+    insert into post
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="blogId != null" >
+        blog_id,
+      </if>
+      <if test="authorId != null" >
+        author_id,
+      </if>
+      <if test="createdOn != null" >
+        created_on,
+      </if>
+      <if test="section != null" >
+        section,
+      </if>
+      <if test="subject != null" >
+        subject,
+      </if>
+      <if test="draft != null" >
+        draft,
+      </if>
+      <if test="body != null" >
+        body,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="blogId != null" >
+        #{blogId,jdbcType=INTEGER},
+      </if>
+      <if test="authorId != null" >
+        #{authorId,jdbcType=INTEGER},
+      </if>
+      <if test="createdOn != null" >
+        #{createdOn,jdbcType=VARCHAR},
+      </if>
+      <if test="section != null" >
+        #{section,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="draft != null" >
+        #{draft,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null" >
+        #{body,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzt.demo.model.Post" >
+    update post
+    <set >
+      <if test="blogId != null" >
+        blog_id = #{blogId,jdbcType=INTEGER},
+      </if>
+      <if test="authorId != null" >
+        author_id = #{authorId,jdbcType=INTEGER},
+      </if>
+      <if test="createdOn != null" >
+        created_on = #{createdOn,jdbcType=VARCHAR},
+      </if>
+      <if test="section != null" >
+        section = #{section,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        subject = #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="draft != null" >
+        draft = #{draft,jdbcType=VARCHAR},
+      </if>
+      <if test="body != null" >
+        body = #{body,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzt.demo.model.Post" >
+    update post
+    set blog_id = #{blogId,jdbcType=INTEGER},
+      author_id = #{authorId,jdbcType=INTEGER},
+      created_on = #{createdOn,jdbcType=VARCHAR},
+      section = #{section,jdbcType=VARCHAR},
+      subject = #{subject,jdbcType=VARCHAR},
+      draft = #{draft,jdbcType=VARCHAR},
+      body = #{body,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

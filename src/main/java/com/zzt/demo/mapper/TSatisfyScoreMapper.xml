@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzt.demo.dao.TSatisfyScoreMapper" >
+  <resultMap id="BaseResultMap" type="com.zzt.demo.model.TSatisfyScore" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <!--下面四行注释了也能使用，因为开启了自动映射-->
+   <!-- <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="in_call" property="inCall" jdbcType="VARCHAR" />
+    <result column="satisfy_result" property="satisfyResult" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />-->
+    <!--自定义枚举类的TypeHandler,实现code转换-->
+    <result column="satisfy_result" property="satisfyResultEnum"  typeHandler="com.zzt.demo.handler.EnumStatusHandler" />
+  </resultMap>
+  <cache />
+  <sql id="Base_Column_List" >
+    <include refid="table_id"> <property name="id1" value="id"></property> <property name="user_id1" value="user_id"></property> </include> in_call, satisfy_result, create_time
+  </sql>
+  <sql id="table_id">
+    ${id1},${user_id1},
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+
+    select 
+    <include refid="Base_Column_List" />
+    from t_satisfy_score
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+
+    delete from t_satisfy_score
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzt.demo.model.TSatisfyScore" >
+
+    <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+       SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_satisfy_score (user_id, in_call,
+      satisfy_result, create_time)
+    values (#{userId,jdbcType=VARCHAR}, #{inCall,jdbcType=VARCHAR},
+      #{satisfyResultEnum}, #{createTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzt.demo.model.TSatisfyScore" useGeneratedKeys="true" keyProperty="id"  >
+    insert into t_satisfy_score
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="inCall != null" >
+        in_call,
+      </if>
+      <if test="satisfyResultEnum != null" >
+        satisfy_result,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="inCall != null" >
+        #{inCall,jdbcType=VARCHAR},
+      </if>
+      <if test="satisfyResultEnum != null" >
+        #{satisfyResultEnum,typeHandler=com.zzt.demo.handler.EnumStatusHandler},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzt.demo.model.TSatisfyScore" >
+
+    update t_satisfy_score
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="inCall != null" >
+        in_call = #{inCall,jdbcType=VARCHAR},
+      </if>
+      <if test="satisfyResult != null" >
+        satisfy_result = #{satisfyResult,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzt.demo.model.TSatisfyScore" >
+
+    update t_satisfy_score
+    set user_id = #{userId,jdbcType=VARCHAR},
+      in_call = #{inCall,jdbcType=VARCHAR},
+      satisfy_result = #{satisfyResult,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

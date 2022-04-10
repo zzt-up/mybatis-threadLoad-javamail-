@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzt.demo.dao.BlogMapper" >
+  <resultMap id="BaseResultMap" type="com.zzt.demo.model.Blog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="author_id" property="authorId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, author_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from blog
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from blog
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzt.demo.model.Blog" >
+    insert into blog (id, title, author_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{authorId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzt.demo.model.Blog" >
+    insert into blog
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="authorId != null" >
+        author_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="authorId != null" >
+        #{authorId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzt.demo.model.Blog" >
+    update blog
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="authorId != null" >
+        author_id = #{authorId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzt.demo.model.Blog" >
+    update blog
+    set title = #{title,jdbcType=VARCHAR},
+      author_id = #{authorId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap id="detailedBlogResultMap" type="Blog">
+    <constructor>
+      <idArg column="blog_id" javaType="int"/>
+    </constructor>
+    <result property="title" column="blog_title"/>
+    <association property="author" javaType="Author" column="author_id" >
+      <id property="id" column="author_id"/>
+      <result property="username" column="author_username"/>
+      <result property="password" column="author_password"/>
+      <result property="email" column="author_email"/>
+      <result property="bio" column="author_bio"/>
+      <result property="favouriteSection" column="author_favourite_section"/>
+    </association>
+    <collection property="posts" ofType="Post">
+      <id property="id" column="post_id"/>
+      <result property="subject" column="post_subject"/>
+      <association property="author" javaType="Author"/>
+      <collection property="comments" ofType="Comment">
+        <id property="id" column="comment_id"/>
+      </collection>
+      <collection property="tags" ofType="Tag" >
+        <id property="id" column="tag_id"/>
+      </collection>
+      <discriminator javaType="int" column="draft">
+        <case value="1" resultType="DraftPost"/>
+      </discriminator>
+    </collection>
+  </resultMap>
+
+
+  <select id="selectBlogDetails" resultMap="detailedBlogResultMap">
+
+    select
+    B.id as blog_id,
+    B.title as blog_title,
+    B.author_id as blog_author_id,
+    A.id as author_id,
+    A.username as author_username,
+    A.password as author_password,
+    A.email as author_email,
+    A.bio as author_bio,
+    A.favourite_section as author_favourite_section,
+    P.id as post_id,
+    P.blog_id as post_blog_id,
+    P.author_id as post_author_id,
+    P.created_on as post_created_on,
+    P.section as post_section,
+    P.subject as post_subject,
+    P.draft as draft,
+    P.body as post_body,
+    C.id as comment_id,
+    C.post_id as comment_post_id,
+    C.name as comment_name,
+    C.comment as comment_text,
+    T.id as tag_id,
+    T.name as tag_name
+    from Blog B
+    left outer join Author A on B.author_id = A.id
+    left outer join Post P on B.id = P.blog_id
+    left outer join Comment C on P.id = C.post_id
+    left outer join Post_Tag PT on PT.post_id = P.id
+    left outer join Tag T on PT.tag_id = T.id
+    where B.id = #{id}
+  </select>
+</mapper>
